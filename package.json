@@ -1,0 +1,30 @@
+{
+  "name": "learn-prisma",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon script.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DhirajsGithub/learn-prisma.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DhirajsGithub/learn-prisma/issues"
+  },
+  "homepage": "https://github.com/DhirajsGithub/learn-prisma#readme",
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "nodemon": "^3.0.1",
+    "prisma": "^5.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.4.2"
+  }
+}

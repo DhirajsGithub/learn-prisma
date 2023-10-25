@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// we can have multiple generator, e.g. for prisma client or graph ql 
+generator client {
+  provider = "prisma-client-js"
+}
+
+//  only one data source will be there, which must provides a provider and a url which links to that particular database
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// models essentially represents the table inside your db, each model is compose of different fields
+// field_name field_type attributes(optional, starts with @)
+// field_type will have modifier which is optional e.g. name String?
+model User {
+  // id         Int     @id @default(autoincrement())
+  id         String  @id @default(uuid()) // field level attribute, applies to the field or this row only
+  name       String
+  age        Int
+  email      String  @unique
+  isAdmin    Boolean
+  preference Json?
+  // blog Unsupported("")   //  any unsupported type for praticular provider
+
+  writternPosts  Post[] @relation("writtenPosts") // one to many relationship
+  favouritePosts Post[] @relation("favouritePosts") // one to many relationship
+
+  // UserPreference? // one to one relationship
+  UserPreference   UserPreference? @relation(fields: [userPreferenceId], references: [id])
+  userPreferenceId String?         @unique // one to one relationship
+
+  role Role @default(BASIC) // default value for role will be BASIC
+
+  // @@map("users") // table level or block level attribute, applies to the whole table
+  @@unique([name, age]) // this block will have unique combination of name and age
+  @@index([email]) // this block will have index on email, for sorting or performance stuff
+}
+
+model UserPreference {
+  id           String  @id @default(uuid())
+  emailUpdates Boolean
+  user         User?
+
+  // below code will create a problem while deleting a user that's why we are using it in User and not here
+  // user         User    @relation(fields: [userId], references: [id])
+  // userId       String  @unique // one to one relationship
+}
+
+// only two modifiers are there ?(optional) and [](array )
+
+// we will have one to one or many to many relationship as well
+
+model Post {
+  id        String   @id @default(uuid())
+  avgRating Float
+  title     String
+  createAt  DateTime @default(now()) // current time stamp
+  updatedAt DateTime @updatedAt // will automatically update it 
+  author    User     @relation("writtenPosts", fields: [authorId], references: [id]) // many to one relationship
+  // relation(fields: [userId], references: [id] --> relates one model to another i.e. there is userId filed below which should match with id from Use as a reference
+  authorId  String // note this is an id from User, hence it's type must be same as User id
+
+  favoutitedBy User?   @relation("favouritePosts", fields: [favouritedBy], references: [id])
+  favouritedBy String?
+
+  categories Category[] // many to many relation, all of our posts can have multiple categories and all the categories can have multiple posts
+
+  // block level attribute
+  // @@id([title, authorId])   // instead of having specific id, we can have combination of title and authorId as a primary key  
+}
+
+model Category {
+  id    String @id @default(uuid())
+  posts Post[] // many to many relation
+  name  String @unique
+}
+
+// enums are data types that contain a static, ordered set of values.
+// for hard coded values, we can use enum
+enum Role {
+  BASIC
+  ADMIN
+}
