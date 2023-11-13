@@ -8,6 +8,7 @@ an open source tool that makes it fun and safe to work with your database. It re
 ## Prisma with MySQL and typescript
 initial setup for prisma with mysql and typescript
 ```
+$ npm install
 $ npm init -y
 $ npm i --save-dev prisma typescript ts-node @types/node nodemon
 $ npx prisma init
